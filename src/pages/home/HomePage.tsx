@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Sprout,
@@ -9,9 +10,12 @@ import {
   Shield,
   ArrowRight,
   CheckCircle2,
+  Menu,
+  X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 const features = [
   {
@@ -56,25 +60,63 @@ const benefits = [
 ];
 
 export function HomePage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16">
           <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-              <Sprout className="h-6 w-6 text-primary" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 sm:h-10 sm:w-10">
+              <Sprout className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
             </div>
-            <span className="text-xl font-bold text-primary">CoopGestão</span>
+            <span className="text-lg font-bold text-primary sm:text-xl">CoopGestão</span>
           </div>
-          <nav className="flex items-center gap-2">
-            <Button variant="ghost" asChild>
+          
+          {/* Desktop Navigation */}
+          <nav className="hidden items-center gap-1 sm:flex sm:gap-2">
+            <Button variant="ghost" size="sm" asChild className="sm:size-default">
               <a href="#recursos">Recursos</a>
             </Button>
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" size="sm" asChild className="sm:size-default">
               <a href="#sobre">Sobre</a>
             </Button>
-            <Button asChild>
+            <Button size="sm" asChild className="sm:size-default">
+              <Link to="/login">
+                Entrar
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
+            </Button>
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="sm:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
+        </div>
+
+        {/* Mobile Navigation */}
+        <div
+          className={cn(
+            'overflow-hidden border-t transition-all duration-300 ease-in-out sm:hidden',
+            mobileMenuOpen ? 'max-h-60' : 'max-h-0 border-t-0'
+          )}
+        >
+          <nav className="flex flex-col gap-2 p-4">
+            <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#recursos">Recursos</a>
+            </Button>
+            <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#sobre">Sobre</a>
+            </Button>
+            <Button asChild onClick={() => setMobileMenuOpen(false)}>
               <Link to="/login">
                 Entrar
                 <ArrowRight className="ml-1 h-4 w-4" />
@@ -87,28 +129,28 @@ export function HomePage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
+          <div className="absolute left-1/2 top-0 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl sm:h-[500px] sm:w-[500px]" />
         </div>
-        <div className="mx-auto max-w-6xl px-4 py-20 text-center md:py-32">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-            <Sprout className="h-10 w-10 text-primary" />
+        <div className="mx-auto max-w-6xl px-4 py-12 text-center sm:py-16 md:py-24 lg:py-32">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 sm:mb-6 sm:h-16 sm:w-16 sm:rounded-2xl">
+            <Sprout className="h-7 w-7 text-primary sm:h-10 sm:w-10" />
           </div>
-          <h1 className="mb-4 text-balance text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+          <h1 className="mb-3 text-balance text-3xl font-bold tracking-tight sm:mb-4 sm:text-4xl md:text-5xl lg:text-6xl">
             Gestão completa para sua{' '}
             <span className="text-primary">cooperativa</span>
           </h1>
-          <p className="mx-auto mb-8 max-w-2xl text-pretty text-lg text-muted-foreground md:text-xl">
+          <p className="mx-auto mb-6 max-w-2xl text-pretty text-base text-muted-foreground sm:mb-8 sm:text-lg md:text-xl">
             Sistema web para gerenciamento de cooperados, finanças, estoque e anuidades. 
             Tudo em um só lugar, acessível de qualquer dispositivo.
           </p>
           <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button size="lg" asChild>
+            <Button size="lg" asChild className="w-full sm:w-auto">
               <Link to="/login">
                 Acessar o sistema
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild>
+            <Button size="lg" variant="outline" asChild className="w-full sm:w-auto">
               <a href="#recursos">Conhecer recursos</a>
             </Button>
           </div>
@@ -116,27 +158,27 @@ export function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section id="recursos" className="border-t bg-muted/30 py-16 md:py-24">
+      <section id="recursos" className="border-t bg-muted/30 py-12 sm:py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="mb-12 text-center">
-            <h2 className="mb-3 text-3xl font-bold tracking-tight md:text-4xl">
+          <div className="mb-8 text-center sm:mb-12">
+            <h2 className="mb-2 text-2xl font-bold tracking-tight sm:mb-3 sm:text-3xl md:text-4xl">
               Tudo que você precisa
             </h2>
-            <p className="mx-auto max-w-2xl text-muted-foreground">
+            <p className="mx-auto max-w-2xl text-sm text-muted-foreground sm:text-base">
               Funcionalidades completas para gerenciar sua cooperativa de forma eficiente e organizada.
             </p>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             {features.map((feature) => (
               <Card key={feature.title} className="border-0 bg-card shadow-sm transition-shadow hover:shadow-md">
-                <CardHeader>
-                  <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                    <feature.icon className="h-6 w-6 text-primary" />
+                <CardHeader className="pb-2 sm:pb-4">
+                  <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 sm:h-12 sm:w-12">
+                    <feature.icon className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
                   </div>
-                  <CardTitle className="text-lg">{feature.title}</CardTitle>
+                  <CardTitle className="text-base sm:text-lg">{feature.title}</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-sm leading-relaxed">
+                <CardContent className="pt-0">
+                  <CardDescription className="text-xs leading-relaxed sm:text-sm">
                     {feature.description}
                   </CardDescription>
                 </CardContent>
@@ -147,59 +189,59 @@ export function HomePage() {
       </section>
 
       {/* Benefits Section */}
-      <section id="sobre" className="py-16 md:py-24">
+      <section id="sobre" className="py-12 sm:py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            <div>
-              <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
+          <div className="grid items-center gap-8 sm:gap-12 lg:grid-cols-2">
+            <div className="order-2 lg:order-1">
+              <h2 className="mb-3 text-2xl font-bold tracking-tight sm:mb-4 sm:text-3xl md:text-4xl">
                 Por que escolher o CoopGestão?
               </h2>
-              <p className="mb-8 text-muted-foreground">
+              <p className="mb-6 text-sm text-muted-foreground sm:mb-8 sm:text-base">
                 Desenvolvido especialmente para cooperativas, nosso sistema oferece 
                 todas as ferramentas necessárias para uma gestão moderna e eficiente.
               </p>
-              <ul className="space-y-3">
+              <ul className="grid gap-2 sm:gap-3">
                 {benefits.map((benefit) => (
-                  <li key={benefit} className="flex items-center gap-3">
-                    <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
-                    <span className="text-sm">{benefit}</span>
+                  <li key={benefit} className="flex items-center gap-2 sm:gap-3">
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-primary sm:h-5 sm:w-5" />
+                    <span className="text-xs sm:text-sm">{benefit}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="relative">
+            <div className="relative order-1 lg:order-2">
               <div className="absolute inset-0 -z-10 rounded-3xl bg-gradient-to-br from-primary/20 via-primary/5 to-transparent blur-2xl" />
               <Card className="border-0 shadow-lg">
-                <CardHeader className="space-y-1 pb-4">
-                  <div className="flex items-center gap-2">
-                    <div className="h-3 w-3 rounded-full bg-red-400" />
-                    <div className="h-3 w-3 rounded-full bg-yellow-400" />
-                    <div className="h-3 w-3 rounded-full bg-green-400" />
+                <CardHeader className="space-y-1 pb-3 sm:pb-4">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <div className="h-2.5 w-2.5 rounded-full bg-red-400 sm:h-3 sm:w-3" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-yellow-400 sm:h-3 sm:w-3" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-green-400 sm:h-3 sm:w-3" />
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between rounded-lg bg-muted/50 p-4">
+                <CardContent className="space-y-3 sm:space-y-4">
+                  <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3 sm:p-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">Total de cooperados</p>
-                      <p className="text-2xl font-bold">248</p>
+                      <p className="text-xs text-muted-foreground sm:text-sm">Total de cooperados</p>
+                      <p className="text-xl font-bold sm:text-2xl">248</p>
                     </div>
-                    <Users className="h-8 w-8 text-primary/50" />
+                    <Users className="h-6 w-6 text-primary/50 sm:h-8 sm:w-8" />
                   </div>
-                  <div className="flex items-center justify-between rounded-lg bg-muted/50 p-4">
+                  <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3 sm:p-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">Saldo do caixa</p>
-                      <p className="text-2xl font-bold text-primary">R$ 45.230,00</p>
+                      <p className="text-xs text-muted-foreground sm:text-sm">Saldo do caixa</p>
+                      <p className="text-xl font-bold text-primary sm:text-2xl">R$ 45.230,00</p>
                     </div>
-                    <Wallet className="h-8 w-8 text-primary/50" />
+                    <Wallet className="h-6 w-6 text-primary/50 sm:h-8 sm:w-8" />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="rounded-lg bg-emerald-50 p-3 dark:bg-emerald-950/30">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    <div className="rounded-lg bg-emerald-50 p-2.5 sm:p-3 dark:bg-emerald-950/30">
                       <p className="text-xs text-muted-foreground">Entradas</p>
-                      <p className="font-semibold text-emerald-600">R$ 12.450</p>
+                      <p className="text-sm font-semibold text-emerald-600 sm:text-base">R$ 12.450</p>
                     </div>
-                    <div className="rounded-lg bg-red-50 p-3 dark:bg-red-950/30">
+                    <div className="rounded-lg bg-red-50 p-2.5 sm:p-3 dark:bg-red-950/30">
                       <p className="text-xs text-muted-foreground">Saídas</p>
-                      <p className="font-semibold text-red-600">R$ 8.320</p>
+                      <p className="text-sm font-semibold text-red-600 sm:text-base">R$ 8.320</p>
                     </div>
                   </div>
                 </CardContent>
@@ -210,15 +252,15 @@ export function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="border-t bg-primary/5 py-16 md:py-20">
+      <section className="border-t bg-primary/5 py-12 sm:py-16 md:py-20">
         <div className="mx-auto max-w-3xl px-4 text-center">
-          <h2 className="mb-4 text-2xl font-bold tracking-tight md:text-3xl">
+          <h2 className="mb-3 text-xl font-bold tracking-tight sm:mb-4 sm:text-2xl md:text-3xl">
             Pronto para modernizar sua gestão?
           </h2>
-          <p className="mb-8 text-muted-foreground">
+          <p className="mb-6 text-sm text-muted-foreground sm:mb-8 sm:text-base">
             Acesse agora mesmo e comece a gerenciar sua cooperativa de forma mais eficiente.
           </p>
-          <Button size="lg" asChild>
+          <Button size="lg" asChild className="w-full sm:w-auto">
             <Link to="/login">
               Acessar o sistema
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -228,14 +270,14 @@ export function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-8">
+      <footer className="border-t py-6 sm:py-8">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <div className="flex flex-col items-center justify-between gap-3 sm:flex-row sm:gap-4">
             <div className="flex items-center gap-2">
-              <Sprout className="h-5 w-5 text-primary" />
-              <span className="font-semibold text-primary">CoopGestão</span>
+              <Sprout className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
+              <span className="text-sm font-semibold text-primary sm:text-base">CoopGestão</span>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground sm:text-sm">
               Sistema de gestão para cooperativas
             </p>
           </div>
