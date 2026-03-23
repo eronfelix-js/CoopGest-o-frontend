@@ -16,14 +16,14 @@ import { UsuariosPage } from '@/pages/usuarios/UsuariosPage';
 
 function AppRedirect() {
   const isGestor = useAuthStore((s) => s.isGestor());
-  return <Navigate to={isGestor ? '/dashboard' : '/cooperados'} replace />;
+  return <Navigate to={isGestor ? '/app/dashboard' : '/app/cooperados'} replace />;
 }
 
 export const router = createBrowserRouter([
   { path: '/', element: <HomePage /> },
   { path: '/login', element: <LoginPage /> },
   {
-    path: '/',
+    path: '/app',
     element: (
       <PrivateRoute>
         <AppLayout />
