@@ -3,6 +3,7 @@ import { useAuthStore } from '@/store/authStore';
 import { PrivateRoute } from '@/components/shared/PrivateRoute';
 import { GestorRoute } from '@/components/shared/GestorRoute';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { HomePage } from '@/pages/home/HomePage';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { DashboardPage } from '@/pages/dashboard/DashboardPage';
 import { CooperadosPage } from '@/pages/cooperados/CooperadosPage';
@@ -13,22 +14,23 @@ import { LancamentosPage } from '@/pages/lancamentos/LancamentosPage';
 import { RelatoriosPage } from '@/pages/relatorios/RelatoriosPage';
 import { UsuariosPage } from '@/pages/usuarios/UsuariosPage';
 
-function RootRedirect() {
+function AppRedirect() {
   const isGestor = useAuthStore((s) => s.isGestor());
-  return <Navigate to={isGestor ? '/dashboard' : '/cooperados'} replace />;
+  return <Navigate to={isGestor ? '/app/dashboard' : '/app/cooperados'} replace />;
 }
 
 export const router = createBrowserRouter([
+  { path: '/', element: <HomePage /> },
   { path: '/login', element: <LoginPage /> },
   {
-    path: '/',
+    path: '/app',
     element: (
       <PrivateRoute>
         <AppLayout />
       </PrivateRoute>
     ),
     children: [
-      { index: true, element: <RootRedirect />, handle: { title: 'Início' } },
+      { index: true, element: <AppRedirect />, handle: { title: 'Início' } },
       {
         path: 'dashboard',
         element: (
