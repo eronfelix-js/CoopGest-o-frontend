@@ -35,7 +35,7 @@ export function LoginPage() {
       const res = await login(values.email, values.password);
       useAuthStore.getState().setFromLoginResponse(res);
       const isGestor = useAuthStore.getState().isGestor();
-      const target = from && from !== '/login' ? from : isGestor ? '/dashboard' : '/cooperados';
+      const target = from && from !== '/login' && from !== '/' ? from : isGestor ? '/app/dashboard' : '/app/cooperados';
       navigate(target, { replace: true });
     } catch (e) {
       showApiError(e, 'Credenciais inválidas');
