@@ -14,16 +14,16 @@ import { useAuthStore } from '@/store/authStore';
 import { Separator } from '@/components/ui/separator';
 
 const gestorLinks = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/cooperados', label: 'Cooperados', icon: Users },
-  { to: '/anuidades', label: 'Anuidades', icon: CalendarClock },
-  { to: '/estoque', label: 'Estoque', icon: Package },
-  { to: '/lancamentos', label: 'Caixa', icon: Wallet },
-  { to: '/relatorios', label: 'Relatórios', icon: FileBarChart },
-  { to: '/usuarios', label: 'Usuários', icon: UserCog },
+  { to: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/app/cooperados', label: 'Cooperados', icon: Users },
+  { to: '/app/anuidades', label: 'Anuidades', icon: CalendarClock },
+  { to: '/app/estoque', label: 'Estoque', icon: Package },
+  { to: '/app/lancamentos', label: 'Caixa', icon: Wallet },
+  { to: '/app/relatorios', label: 'Relatórios', icon: FileBarChart },
+  { to: '/app/usuarios', label: 'Usuários', icon: UserCog },
 ];
 
-const colaboradorLinks = [{ to: '/cooperados', label: 'Cooperados', icon: Users }];
+const colaboradorLinks = [{ to: '/app/cooperados', label: 'Cooperados', icon: Users }];
 
 export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const location = useLocation();
@@ -41,7 +41,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
       </div>
       <Separator className="mb-2" />
       {links.map(({ to, label, icon: Icon }) => {
-        const active = location.pathname === to || (to !== '/dashboard' && location.pathname.startsWith(to + '/'));
+        const active = location.pathname === to || (to !== '/app/dashboard' && location.pathname.startsWith(to + '/'));
         return (
           <Link
             key={to}
