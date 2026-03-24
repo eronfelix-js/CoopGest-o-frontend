@@ -2,7 +2,7 @@ import axios from 'axios';
 import { api } from '@/services/api';
 import type { LoginRequestBody, LoginResponse, MeResponse } from '@/types';
 
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const baseURL = 'https://confident-endurance-production-1d64.up.railway.app';
 
 /** `POST /auth/login` — público, sem `Authorization`. Corpo = `LoginRequest` (email, senha). */
 export async function login(email: string, senha: string): Promise<LoginResponse> {
