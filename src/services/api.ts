@@ -1,7 +1,7 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/store/authStore';
 
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const baseURL = import.meta.env.VITE_API_URL || 'https://confident-endurance-production-1d64.up.railway.app';
 
 export const api = axios.create({
   baseURL,
