@@ -13,6 +13,7 @@ import { EstoquePage } from '@/pages/estoque/EstoquePage';
 import { LancamentosPage } from '@/pages/lancamentos/LancamentosPage';
 import { RelatoriosPage } from '@/pages/relatorios/RelatoriosPage';
 import { UsuariosPage } from '@/pages/usuarios/UsuariosPage';
+import { LicitacoesPage } from '@/pages/licitacoes/LicitacoesPage';
 
 function AppRedirect() {
   const isGestor = useAuthStore((s) => s.isGestor());
@@ -42,6 +43,15 @@ export const router = createBrowserRouter([
       },
       { path: 'cooperados', element: <CooperadosPage />, handle: { title: 'Cooperados' } },
       { path: 'cooperados/:id', element: <CooperadoDetalhePage />, handle: { title: 'Cooperado' } },
+      {
+        path: 'licitacoes',
+        element: (
+          <GestorRoute>
+            <LicitacoesPage />
+          </GestorRoute>
+        ),
+        handle: { title: 'Licitações' },
+      },
       {
         path: 'anuidades',
         element: (
