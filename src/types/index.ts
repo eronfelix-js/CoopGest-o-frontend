@@ -3,6 +3,7 @@ export type StatusCooperado = 'ATIVO' | 'INATIVO';
 export type StatusPagamento = 'PAGO' | 'PENDENTE' | 'ATRASADO';
 export type TipoLancamento = 'ENTRADA' | 'SAIDA';
 export type CategoriaLancamento = 'ANUIDADE' | 'VENDA' | 'DESPESA' | 'OUTRO';
+export type StatusLicitacao = 'ABERTA' | 'RESERVADA' | 'EM_TRANSITO' | 'ENTREGUE' | 'CANCELADA';
 
 export interface Usuario {
   id: number;
@@ -98,6 +99,32 @@ export interface ErrorResponse {
   errors?: { field: string; message: string }[];
 }
 
+export interface LicitacaoItem {
+  id: number;
+  cooperadoId: number;
+  cooperadoNome: string;
+  produtoId: number;
+  produtoNome: string;
+  quantidade: number;
+  valorUnitario: number;
+  valorTotal: number;
+}
+
+export interface Licitacao {
+  id: number;
+  numeroEdital: string;
+  orgaoLicitante: string;
+  valorTotal: number;
+  dataAbertura: string;
+  prazoEntrega: string;
+  dataSaida: string | null;
+  dataEntrega: string | null;
+  observacao: string | null;
+  status: StatusLicitacao;
+  itens: LicitacaoItem[];
+  criadoEm: string;
+}
+
 export interface CooperadoRequest {
   nome: string;
   cpf: string;
@@ -147,6 +174,30 @@ export interface UsuarioRequest {
   email: string;
   senha: string;
   perfil: PerfilUsuario;
+}
+
+export interface LicitacaoItemRequest {
+  cooperadoId: number;
+  produtoId: number;
+  quantidade: number;
+  valorUnitario: number;
+}
+
+export interface LicitacaoRequest {
+  numeroEdital: string;
+  orgaoLicitante: string;
+  valorTotal: number;
+  dataAbertura: string;
+  prazoEntrega: string;
+  observacao?: string;
+  itens: LicitacaoItemRequest[];
+}
+
+export interface LicitacaoStatusRequest {
+  status: StatusLicitacao;
+  dataSaida?: string;
+  dataEntrega?: string;
+  observacao?: string;
 }
 
 /** Corpo de `POST /auth/login` — alinhado a `LoginRequest` no backend. */
