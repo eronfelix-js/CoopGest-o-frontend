@@ -239,7 +239,7 @@ export function CooperadosPage() {
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
                       <Button variant="ghost" size="icon" asChild title="Detalhes">
-                        <Link to={`/cooperados/${c.id}`}>
+                        <Link to={`/app/cooperados/${c.id}`}>
                           <Eye className="h-4 w-4" />
                         </Link>
                       </Button>
