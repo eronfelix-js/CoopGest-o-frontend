@@ -51,9 +51,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 import * as produtosService from '@/services/produtosService';
-import { cooperadosService } from '@/services/cooperadosService';
-import { estoqueService } from '@/services/estoqueService';
-import { showApiError } from '@/utils/showApiError';
+import * as cooperadosService from '@/services/cooperadosService';
+import * as estoqueService from '@/services/estoqueService';
+import { showApiError } from '@/utils/errors';
 import type { Produto, ProdutoRequest, Cooperado, SaldoEstoque } from '@/types';
 
 const CATEGORIAS = [
@@ -147,7 +147,7 @@ export function ProdutosPage() {
   const fetchSaldo = async (produtoId: number) => {
     if (saldos[produtoId] !== undefined) return;
     try {
-      const saldo = await estoqueService.saldo(produtoId);
+      const saldo = await estoqueService.saldoPorProduto(produtoId);
       setSaldos((prev) => ({ ...prev, [produtoId]: saldo }));
     } catch {
       setSaldos((prev) => ({ ...prev, [produtoId]: null }));
