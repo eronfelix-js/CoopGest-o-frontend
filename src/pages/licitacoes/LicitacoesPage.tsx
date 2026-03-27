@@ -11,7 +11,6 @@ import {
   FileText,
   Building2,
   Package,
-  X,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
@@ -165,7 +164,7 @@ export function LicitacoesPage() {
       setStatusOpen(false);
       setSelectedLicitacao(null);
     },
-    onError: showApiError,
+    onError: (error) => showApiError(error),
   });
 
   const handleOpenDetail = (lic: Licitacao) => {
