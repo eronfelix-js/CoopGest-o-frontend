@@ -49,7 +49,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Skeleton } from '@/components/ui/skeleton';
 
 import * as produtosService from '@/services/produtosService';
 import { cooperadosService } from '@/services/cooperadosService';
@@ -308,10 +307,11 @@ export function ProdutosPage() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="space-y-3">
-              {[...Array(5)].map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
-              ))}
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+                <p className="text-muted-foreground">Carregando produtos...</p>
+              </div>
             </div>
           ) : filteredProdutos.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
