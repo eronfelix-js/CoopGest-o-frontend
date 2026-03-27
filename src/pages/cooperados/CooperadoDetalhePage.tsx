@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Package } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -62,12 +62,21 @@ export function CooperadoDetalhePage() {
   const [prodOpen, setProdOpen] = useState(false);
   const [deleteProdId, setDeleteProdId] = useState<number | null>(null);
 
+  // Dados do cooperado
   const { data: c, isLoading } = useQuery({
     queryKey: ['cooperados', cooperadoId],
     queryFn: () => cooperadosService.buscarPorId(cooperadoId),
     enabled: Number.isFinite(cooperadoId),
   });
 
+  // Produtos do cooperado via endpoint dedicado — garante que a lista está sempre atualizada
+  const { data: produtos = [], isLoading: loadingProdutos } = useQuery({
+    queryKey: ['produtos', 'cooperado', cooperadoId],
+    queryFn: () => produtosService.listarPorCooperado(cooperadoId),
+    enabled: Number.isFinite(cooperadoId),
+  });
+
+  // Anuidades (só gestor)
   const { data: anuidades = [] } = useQuery({
     queryKey: ['anuidades', 'cooperado', cooperadoId],
     queryFn: () => anuidadesService.listarPorCooperado(cooperadoId),
@@ -88,7 +97,10 @@ export function CooperadoDetalhePage() {
       }),
     onSuccess: () => {
       toast.success('Produto cadastrado');
+      // Invalida tanto a query de produtos dedicada quanto a do cooperado
+      qc.invalidateQueries({ queryKey: ['produtos', 'cooperado', cooperadoId] });
       qc.invalidateQueries({ queryKey: ['cooperados', cooperadoId] });
+      qc.invalidateQueries({ queryKey: ['produtos'] });
       setProdOpen(false);
       form.reset();
     },
@@ -103,7 +115,9 @@ export function CooperadoDetalhePage() {
     mutationFn: (pid: number) => produtosService.deletar(pid),
     onSuccess: () => {
       toast.success('Produto removido');
+      qc.invalidateQueries({ queryKey: ['produtos', 'cooperado', cooperadoId] });
       qc.invalidateQueries({ queryKey: ['cooperados', cooperadoId] });
+      qc.invalidateQueries({ queryKey: ['produtos'] });
       setDeleteProdId(null);
     },
     onError: (e: unknown) => showApiError(e),
@@ -115,9 +129,11 @@ export function CooperadoDetalhePage() {
 
   return (
     <div className="space-y-8">
+      {/* Cabeçalho */}
       <div className="flex flex-wrap items-center gap-4">
         <Button variant="ghost" size="sm" asChild>
-          <Link to="/cooperados">
+          {/* Corrigido: rota com prefixo /app/ */}
+          <Link to="/app/cooperados">
             <ArrowLeft className="h-4 w-4" />
             Voltar
           </Link>
@@ -126,6 +142,7 @@ export function CooperadoDetalhePage() {
         <CooperadoStatusBadge status={c.status} />
       </div>
 
+      {/* Dados do cooperado */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Dados</CardTitle>
@@ -147,74 +164,118 @@ export function CooperadoDetalhePage() {
         </CardContent>
       </Card>
 
+      {/* Produtos */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
-          <CardTitle className="text-base">Produtos</CardTitle>
+          <CardTitle className="text-base">
+            Produtos
+            {produtos.length > 0 && (
+              <span className="ml-2 text-sm font-normal text-muted-foreground">
+                ({produtos.length})
+              </span>
+            )}
+          </CardTitle>
           <Button size="sm" onClick={() => setProdOpen(true)}>
             <Plus className="h-4 w-4" />
             Adicionar produto
           </Button>
         </CardHeader>
         <CardContent className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>Categoria</TableHead>
-                <TableHead>Unidade</TableHead>
-                <TableHead className="text-right">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {(c.produtos || []).map((p) => (
-                <TableRow key={p.id}>
-                  <TableCell>{p.nome}</TableCell>
-                  <TableCell>{p.categoria}</TableCell>
-                  <TableCell>{p.unidadeMedida}</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="icon" onClick={() => setDeleteProdId(p.id)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </TableCell>
+          {loadingProdutos ? (
+            <div className="flex justify-center py-6">
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            </div>
+          ) : produtos.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-10 text-center text-muted-foreground">
+              <Package className="mb-3 h-10 w-10 opacity-30" />
+              <p className="text-sm">Nenhum produto cadastrado para este cooperado.</p>
+              <Button
+                variant="link"
+                size="sm"
+                className="mt-1"
+                onClick={() => setProdOpen(true)}
+              >
+                Adicionar o primeiro produto
+              </Button>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nome</TableHead>
+                  <TableHead>Categoria</TableHead>
+                  <TableHead>Unidade</TableHead>
+                  <TableHead>Descrição</TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {produtos.map((p) => (
+                  <TableRow key={p.id}>
+                    <TableCell className="font-medium">{p.nome}</TableCell>
+                    <TableCell>{p.categoria}</TableCell>
+                    <TableCell>{p.unidadeMedida}</TableCell>
+                    <TableCell className="max-w-[200px] truncate text-xs text-muted-foreground">
+                      {p.descricao || '—'}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setDeleteProdId(p.id)}
+                        title="Remover produto"
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
 
+      {/* Histórico de anuidades — só gestor */}
       {isGestor && (
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Histórico de anuidades</CardTitle>
           </CardHeader>
           <CardContent className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Ano</TableHead>
-                  <TableHead>Valor</TableHead>
-                  <TableHead>Vencimento</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {anuidades.map((a) => (
-                  <TableRow key={a.id}>
-                    <TableCell>{a.anoReferencia}</TableCell>
-                    <TableCell>{formatMoeda(a.valor)}</TableCell>
-                    <TableCell>{formatData(a.dataVencimento)}</TableCell>
-                    <TableCell>
-                      <PagamentoStatusBadge status={a.status} />
-                    </TableCell>
+            {anuidades.length === 0 ? (
+              <p className="py-4 text-center text-sm text-muted-foreground">
+                Nenhuma anuidade registrada.
+              </p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Ano</TableHead>
+                    <TableHead>Valor</TableHead>
+                    <TableHead>Vencimento</TableHead>
+                    <TableHead>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {anuidades.map((a) => (
+                    <TableRow key={a.id}>
+                      <TableCell>{a.anoReferencia}</TableCell>
+                      <TableCell>{formatMoeda(a.valor)}</TableCell>
+                      <TableCell>{formatData(a.dataVencimento)}</TableCell>
+                      <TableCell>
+                        <PagamentoStatusBadge status={a.status} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       )}
 
+      {/* Modal: cadastrar produto */}
       <Dialog open={prodOpen} onOpenChange={setProdOpen}>
         <DialogContent>
           <DialogHeader>
@@ -287,6 +348,7 @@ export function CooperadoDetalhePage() {
         </DialogContent>
       </Dialog>
 
+      {/* Modal: confirmar remoção de produto */}
       <AlertDialog open={deleteProdId !== null} onOpenChange={() => setDeleteProdId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
