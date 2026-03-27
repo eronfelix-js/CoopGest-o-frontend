@@ -9,6 +9,7 @@ import {
   UserCog,
   Sprout,
   FileText,
+  ShoppingBasket,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/authStore';
@@ -17,6 +18,7 @@ import { Separator } from '@/components/ui/separator';
 const gestorLinks = [
   { to: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/app/cooperados', label: 'Cooperados', icon: Users },
+  { to: '/app/produtos', label: 'Produtos', icon: ShoppingBasket },
   { to: '/app/licitacoes', label: 'Licitações', icon: FileText },
   { to: '/app/anuidades', label: 'Anuidades', icon: CalendarClock },
   { to: '/app/estoque', label: 'Estoque', icon: Package },
