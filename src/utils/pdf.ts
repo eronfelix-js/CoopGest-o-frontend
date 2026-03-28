@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { formatData, formatMoeda, formatCPF, formatTelefone } from '@/utils/format';
-import type { Anuidade, Cooperado, Lancamento, SaldoEstoque } from '@/types';
+import type { Anuidade, Cooperado, Lancamento, Licitacao, SaldoEstoque } from '@/types';
 
 export function downloadComprovanteAnuidade(params: {
   numeroComprovante: string;
@@ -144,4 +144,78 @@ export function downloadRelatorioCaixa(
   doc.text(`Total saídas: ${formatMoeda(totais.saidas)}`, 14, finalY + 6);
   doc.text(`Saldo do período: ${formatMoeda(totais.saldo)}`, 14, finalY + 12);
   doc.save(`relatorio-caixa-${inicio}-${fim}.pdf`);
+}
+
+const statusLicitacaoLabel: Record<string, string> = {
+  ABERTA: 'Aberta',
+  RESERVADA: 'Reservada',
+  EM_TRANSITO: 'Em Trânsito',
+  ENTREGUE: 'Entregue',
+  CANCELADA: 'Cancelada',
+};
+
+export function downloadRelatorioLicitacoes(
+  rows: Licitacao[],
+  filtroStatus: string,
+  totais: { total: number; valorTotal: number; entregues: number; canceladas: number }
+) {
+  const doc = new jsPDF({ orientation: 'landscape' });
+
+  const statusLabel = filtroStatus === 'all' ? 'Todos os status' : (statusLicitacaoLabel[filtroStatus] ?? filtroStatus);
+  const geradoEm = formatData(new Date().toISOString().slice(0, 10));
+
+  doc.setFontSize(13);
+  doc.text('Relatório de Licitações', 14, 16);
+  doc.setFontSize(9);
+  doc.setTextColor(100);
+  doc.text(`Filtro: ${statusLabel}   •   Gerado em: ${geradoEm}`, 14, 24);
+  doc.setTextColor(0);
+
+  // Tabela principal
+  const body = rows.map((l) => [
+    l.numeroEdital,
+    l.orgaoLicitante.length > 30 ? l.orgaoLicitante.slice(0, 30) + '…' : l.orgaoLicitante,
+    formatMoeda(l.valorTotal),
+    formatData(l.dataAbertura),
+    formatData(l.prazoEntrega),
+    l.dataSaida ? formatData(l.dataSaida) : '—',
+    l.dataEntrega ? formatData(l.dataEntrega) : '—',
+    statusLicitacaoLabel[l.status] ?? l.status,
+    String(l.itens.length),
+  ]);
+
+  autoTable(doc, {
+    startY: 30,
+    head: [['Edital', 'Órgão', 'Valor Total', 'Abertura', 'Prazo entrega', 'Data saída', 'Data entrega', 'Status', 'Itens']],
+    body,
+    styles: { fontSize: 7, cellPadding: 2 },
+    headStyles: { fillColor: [22, 101, 52], textColor: 255, fontStyle: 'bold' },
+    columnStyles: {
+      0: { cellWidth: 28 },
+      1: { cellWidth: 55 },
+      2: { cellWidth: 28, halign: 'right' },
+      3: { cellWidth: 22, halign: 'center' },
+      4: { cellWidth: 24, halign: 'center' },
+      5: { cellWidth: 22, halign: 'center' },
+      6: { cellWidth: 22, halign: 'center' },
+      7: { cellWidth: 22, halign: 'center' },
+      8: { cellWidth: 12, halign: 'center' },
+    },
+    alternateRowStyles: { fillColor: [245, 255, 248] },
+  });
+
+  // Totalizadores
+  const finalY = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10;
+
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Resumo', 14, finalY);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Total de licitações: ${totais.total}`, 14, finalY + 7);
+  doc.text(`Valor total (ativas): ${formatMoeda(totais.valorTotal)}`, 14, finalY + 14);
+  doc.text(`Entregues: ${totais.entregues}`, 90, finalY + 7);
+  doc.text(`Canceladas: ${totais.canceladas}`, 90, finalY + 14);
+
+  const d = new Date().toISOString().slice(0, 10);
+  doc.save(`relatorio-licitacoes-${d}.pdf`);
 }

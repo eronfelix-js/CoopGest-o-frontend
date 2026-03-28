@@ -16,13 +16,24 @@ import * as anuidadesService from '@/services/anuidadesService';
 import * as produtosService from '@/services/produtosService';
 import * as estoqueService from '@/services/estoqueService';
 import * as lancamentosService from '@/services/lancamentosService';
+import * as licitacoesService from '@/services/licitacoesService';
 import {
   downloadRelatorioAnuidades,
   downloadRelatorioCaixa,
   downloadRelatorioCooperados,
   downloadRelatorioEstoque,
+  downloadRelatorioLicitacoes,
 } from '@/utils/pdf';
-import type { StatusPagamento } from '@/types';
+import type { StatusLicitacao, StatusPagamento } from '@/types';
+
+const statusLicitacaoOptions: { value: StatusLicitacao | 'all'; label: string }[] = [
+  { value: 'all', label: 'Todos' },
+  { value: 'ABERTA', label: 'Abertas' },
+  { value: 'RESERVADA', label: 'Reservadas' },
+  { value: 'EM_TRANSITO', label: 'Em Trânsito' },
+  { value: 'ENTREGUE', label: 'Entregues' },
+  { value: 'CANCELADA', label: 'Canceladas' },
+];
 
 export function RelatoriosPage() {
   const [ano, setAno] = useState(() => String(new Date().getFullYear()));
@@ -33,7 +44,9 @@ export function RelatoriosPage() {
     return d.toISOString().slice(0, 10);
   });
   const [fim, setFim] = useState(() => new Date().toISOString().slice(0, 10));
+  const [statusLic, setStatusLic] = useState<StatusLicitacao | 'all'>('all');
 
+  // ── Queries existentes ──────────────────────────────────────────────────────
   const { data: cooperados = [] } = useQuery({
     queryKey: ['cooperados'],
     queryFn: cooperadosService.listar,
@@ -66,6 +79,13 @@ export function RelatoriosPage() {
     queryFn: () => lancamentosService.listarPorPeriodo(ini, fim),
   });
 
+  // ── Query de licitações ─────────────────────────────────────────────────────
+  const { data: licitacoes = [] } = useQuery({
+    queryKey: ['licitacoes'],
+    queryFn: licitacoesService.listar,
+  });
+
+  // ── Memos ───────────────────────────────────────────────────────────────────
   const anuidadesFiltradas = useMemo(() => {
     const y = Number(ano);
     return anuidades.filter((a) => {
@@ -76,9 +96,7 @@ export function RelatoriosPage() {
   }, [anuidades, ano, statusAnu]);
 
   const totaisAnu = useMemo(() => {
-    let pago = 0,
-      pendente = 0,
-      atrasado = 0;
+    let pago = 0, pendente = 0, atrasado = 0;
     anuidadesFiltradas.forEach((a) => {
       if (a.status === 'PAGO') pago += a.valor;
       else if (a.status === 'PENDENTE') pendente += a.valor;
@@ -88,8 +106,7 @@ export function RelatoriosPage() {
   }, [anuidadesFiltradas]);
 
   const totaisCaixa = useMemo(() => {
-    let entradas = 0,
-      saidas = 0;
+    let entradas = 0, saidas = 0;
     lancamentos.forEach((l) => {
       if (l.tipo === 'ENTRADA') entradas += l.valor;
       else saidas += l.valor;
@@ -97,8 +114,24 @@ export function RelatoriosPage() {
     return { entradas, saidas, saldo: entradas - saidas };
   }, [lancamentos]);
 
+  const licitacoesFiltradas = useMemo(() => {
+    if (statusLic === 'all') return licitacoes;
+    return licitacoes.filter((l) => l.status === statusLic);
+  }, [licitacoes, statusLic]);
+
+  const totaisLic = useMemo(() => {
+    const ativas = licitacoesFiltradas.filter((l) => l.status !== 'CANCELADA');
+    return {
+      total: licitacoesFiltradas.length,
+      valorTotal: ativas.reduce((acc, l) => acc + l.valorTotal, 0),
+      entregues: licitacoesFiltradas.filter((l) => l.status === 'ENTREGUE').length,
+      canceladas: licitacoesFiltradas.filter((l) => l.status === 'CANCELADA').length,
+    };
+  }, [licitacoesFiltradas]);
+
   return (
     <div className="grid gap-6 md:grid-cols-2">
+      {/* Cooperados */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Cooperados</CardTitle>
@@ -116,6 +149,7 @@ export function RelatoriosPage() {
         </CardContent>
       </Card>
 
+      {/* Anuidades */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Anuidades</CardTitle>
@@ -123,7 +157,12 @@ export function RelatoriosPage() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex flex-wrap gap-2">
-            <Input type="number" className="w-28" value={ano} onChange={(e) => setAno(e.target.value)} />
+            <Input
+              type="number"
+              className="w-28"
+              value={ano}
+              onChange={(e) => setAno(e.target.value)}
+            />
             <Select value={statusAnu} onValueChange={(v) => setStatusAnu(v as typeof statusAnu)}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue />
@@ -147,6 +186,7 @@ export function RelatoriosPage() {
         </CardContent>
       </Card>
 
+      {/* Estoque */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Estoque</CardTitle>
@@ -165,6 +205,7 @@ export function RelatoriosPage() {
         </CardContent>
       </Card>
 
+      {/* Caixa */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Caixa</CardTitle>
@@ -182,6 +223,61 @@ export function RelatoriosPage() {
           >
             <FileDown className="h-4 w-4" />
             Gerar PDF
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Licitações — ocupa linha inteira em desktop */}
+      <Card className="md:col-span-2">
+        <CardHeader>
+          <CardTitle className="text-base">Licitações</CardTitle>
+          <CardDescription>
+            Relatório completo em PDF com edital, órgão, valores, datas e status.
+            Filtre por status antes de gerar.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <Select
+              value={statusLic}
+              onValueChange={(v) => setStatusLic(v as typeof statusLic)}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                {statusLicitacaoOptions.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>
+                    {o.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Resumo rápido antes de gerar */}
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+              <span>
+                <span className="font-medium text-foreground">{totaisLic.total}</span> licitações
+              </span>
+              <span>
+                <span className="font-medium text-foreground">{totaisLic.entregues}</span> entregues
+              </span>
+              <span>
+                <span className="font-medium text-foreground">{totaisLic.canceladas}</span> canceladas
+              </span>
+            </div>
+          </div>
+
+          <Button
+            variant="secondary"
+            className="w-full sm:w-auto"
+            onClick={() =>
+              downloadRelatorioLicitacoes(licitacoesFiltradas, statusLic, totaisLic)
+            }
+            disabled={licitacoesFiltradas.length === 0}
+          >
+            <FileDown className="h-4 w-4" />
+            Gerar PDF ({licitacoesFiltradas.length})
           </Button>
         </CardContent>
       </Card>
