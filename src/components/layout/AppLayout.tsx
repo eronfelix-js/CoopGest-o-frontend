@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { SidebarNav } from '@/components/layout/SidebarNav';
+import { SessionExpiredModal } from '@/components/shared/SessionExpiredModal';
 import { useAuthStore } from '@/store/authStore';
 
 function initials(name: string | null, email: string | null) {
@@ -34,6 +35,9 @@ export function AppLayout() {
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
+      {/* Modal de sessão expirada — dentro do Router context */}
+      <SessionExpiredModal />
+
       <aside className="relative hidden min-h-screen w-64 shrink-0 flex-col border-r bg-card md:flex">
         <SidebarNav />
         <div className="mt-auto border-t p-4">

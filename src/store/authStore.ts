@@ -21,6 +21,10 @@ export interface AuthState {
   logout: () => void;
   isGestor: () => boolean;
   isColaborador: () => boolean;
+  /** Retorna true se há token e ele ainda não expirou */
+  isSessionValid: () => boolean;
+  /** Segundos restantes até expiração (0 se já expirado) */
+  secondsUntilExpiry: () => number;
 }
 
 function applyAccessToken(
@@ -65,6 +69,18 @@ export const useAuthStore = create<AuthState>()(
 
       isGestor: () => get().roles.includes('ROLE_GESTOR'),
       isColaborador: () => get().roles.includes('ROLE_COLABORADOR'),
+
+      isSessionValid: () => {
+        const { accessToken, expiresAt } = get();
+        if (!accessToken || !expiresAt) return false;
+        return Date.now() < expiresAt;
+      },
+
+      secondsUntilExpiry: () => {
+        const { expiresAt } = get();
+        if (!expiresAt) return 0;
+        return Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
+      },
     }),
     {
       name: STORAGE_KEY,
