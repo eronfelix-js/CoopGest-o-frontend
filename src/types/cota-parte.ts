@@ -20,7 +20,7 @@ export interface CotaParte {
   id: number;
   cooperadoId: number;
   cooperadoNome: string;
-  cooperadoCpf?: string;
+  cpfCooperado?: string;
   quantidadeParcelas: number;
   valorTotal: number;
   valorPago: number;

@@ -220,7 +220,7 @@ export function CotaPartePage() {
   const [pagarCota, setPagarCota] = useState<CotaParte | null>(null);
   const [comprovante, setComprovante] = useState<ComprovanteDTO | null>(null);
   const [filtroStatus, setFiltroStatus] = useState<'all' | StatusCota>('all');
-  const [search, setSearch] = useState('');
+  const [search] = useState('');
 
   // ── dados de todas as cotas (lista global via cooperado=all não existe;
   //    usamos a estratégia de buscar cooperados ativos e suas cotas em batch
