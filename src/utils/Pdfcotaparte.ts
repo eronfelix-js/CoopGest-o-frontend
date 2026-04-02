@@ -4,8 +4,6 @@ import { formatData, formatMoeda, formatCPF } from '@/utils/format';
 import type { ComprovanteDTO } from '@/types/cota-parte';
 
 export function downloadComprovanteCotaParte(c: ComprovanteDTO) {
-  console.log('ComprovanteDTO recebido:', c); // ← adicione isso
-  console.log('cpfCooperado:', c.cpfCooperado);
   const doc = new jsPDF();
 
   // Cabeçalho
@@ -43,7 +41,7 @@ export function downloadComprovanteCotaParte(c: ComprovanteDTO) {
   doc.setFontSize(9);
   doc.setTextColor(0);
   y += 8;
-  doc.text(`Nome: ${c.nomeCooperado}`, 20, y);
+  doc.text(`Nome: ${c.cooperadoNome}`, 20, y);
   y += 6;
   doc.text(`CPF: ${formatCPF(c.CpfCooperado)}`, 20, y);
 
