@@ -2,8 +2,8 @@ import axios from 'axios';
 import { api } from '@/services/api';
 import type { LoginRequestBody, LoginResponse, MeResponse } from '@/types';
 
-//const baseURL = import.meta.env.VITE_API_URL;
-const baseURL = 'http://localhost:8080';
+const baseURL = import.meta.env.VITE_API_URL;
+//const baseURL = 'http://localhost:8080';
 /** `POST /auth/login` — público, sem `Authorization`. */
 export async function login(email: string, senha: string): Promise<LoginResponse> {
   const body: LoginRequestBody = { email, senha };

@@ -39,7 +39,7 @@ export interface ComprovanteDTO {
   saldoDevedor: number;
   valorTotal: number;
   cooperadoNome: string;
-  cooperadoCpf: string;
+  CpfCooperado: string;
   parcelasRestantes: number;
   status: StatusCota;
 }
