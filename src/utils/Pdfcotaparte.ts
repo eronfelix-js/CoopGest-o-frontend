@@ -45,7 +45,7 @@ export function downloadComprovanteCotaParte(c: ComprovanteDTO) {
   y += 8;
   doc.text(`Nome: ${c.nomeCooperado}`, 20, y);
   y += 6;
-  doc.text(`CPF: ${formatCPF(c.cpfCooperado)}`, 20, y);
+  doc.text(`CPF: ${formatCPF(c.CpfCooperado)}`, 20, y);
 
   // Dados do pagamento
   y += 14;
