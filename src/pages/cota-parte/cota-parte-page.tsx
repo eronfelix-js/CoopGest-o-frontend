@@ -25,11 +25,11 @@ import {
 } from '@/components/ui/form';
 import { PageLoader } from '@/components/shared/LoadingSpinner';
 import { CooperadoPicker } from '@/components/shared/CooperadoPicker';
-import * as cotaParteService from '@/services/cotaParteService';
+import * as cotaParteService from '@/services/cota-parte-service';
 import { downloadComprovanteCotaParte, downloadRelatorioCotas } from '@/utils/Pdfcotaparte';
 import { formatData, formatMoeda } from '@/utils/format';
 import { showApiError, getFieldErrors } from '@/utils/errors';
-import type { CotaParte, StatusCota, ComprovanteDTO } from '@/types/Cotaparte';
+import type { CotaParte, StatusCota, ComprovanteDTO } from '@/types/cota-parte';
 
 // ─── helpers de badge ────────────────────────────────────────────────────────
 

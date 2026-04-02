@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { formatData, formatMoeda, formatCPF } from '@/utils/format';
-import type { ComprovanteDTO } from '@/types/Cotaparte';
+import type { ComprovanteDTO } from '@/types/cota-parte';
 
 export function downloadComprovanteCotaParte(c: ComprovanteDTO) {
   console.log('ComprovanteDTO recebido:', c); // ← adicione isso

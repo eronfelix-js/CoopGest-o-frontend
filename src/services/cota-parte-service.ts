@@ -1,5 +1,6 @@
 import { api } from '@/services/api';
-import type { CotaParte, ComprovanteDTO } from '@/types/cotaParte';
+import type { CotaParte, ComprovanteDTO } from '@/types/cota-parte';
+
 
 // POST /cota-parte?cooperadoId=1&quantidadeParcelas=5
 export async function criar(

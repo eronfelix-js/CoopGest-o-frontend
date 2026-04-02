@@ -15,7 +15,7 @@ import { RelatoriosPage } from '@/pages/relatorios/RelatoriosPage';
 import { UsuariosPage } from '@/pages/usuarios/UsuariosPage';
 import { LicitacoesPage } from '@/pages/licitacoes/LicitacoesPage';
 import { ProdutosPage } from '@/pages/produtos/ProdutosPage';
-import { CotaPartePage } from '@/pages/cota-parte/CotaPartePage';
+import { CotaPartePage } from '@/pages/cota-parte/cota-parte-page';
 
 
 function AppRedirect() {
