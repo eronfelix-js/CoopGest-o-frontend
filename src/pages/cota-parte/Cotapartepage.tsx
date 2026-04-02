@@ -29,7 +29,7 @@ import * as cotaParteService from '@/services/cotaParteService';
 import { downloadComprovanteCotaParte, downloadRelatorioCotas } from '@/utils/Pdfcotaparte';
 import { formatData, formatMoeda } from '@/utils/format';
 import { showApiError, getFieldErrors } from '@/utils/errors';
-import type { CotaParte, StatusCota, ComprovanteDTO } from '@/types/cotaParte';
+import type { CotaParte, StatusCota, ComprovanteDTO } from '@/types/Cotaparte';
 
 // ─── helpers de badge ────────────────────────────────────────────────────────
 
