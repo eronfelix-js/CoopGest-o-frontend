@@ -10,6 +10,7 @@ import {
   Sprout,
   FileText,
   ShoppingBasket,
+  Coins
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/authStore';
@@ -20,6 +21,7 @@ const gestorLinks = [
   { to: '/app/cooperados', label: 'Cooperados', icon: Users },
   { to: '/app/produtos', label: 'Produtos', icon: ShoppingBasket },
   { to: '/app/licitacoes', label: 'Licitações', icon: FileText },
+  { to: '/app/cota-parte', label: 'Cota-Parte', icon: Coins },
   { to: '/app/anuidades', label: 'Anuidades', icon: CalendarClock },
   { to: '/app/estoque', label: 'Estoque', icon: Package },
   { to: '/app/lancamentos', label: 'Caixa', icon: Wallet },

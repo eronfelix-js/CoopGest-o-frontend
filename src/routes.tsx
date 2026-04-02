@@ -15,6 +15,8 @@ import { RelatoriosPage } from '@/pages/relatorios/RelatoriosPage';
 import { UsuariosPage } from '@/pages/usuarios/UsuariosPage';
 import { LicitacoesPage } from '@/pages/licitacoes/LicitacoesPage';
 import { ProdutosPage } from '@/pages/produtos/ProdutosPage';
+import { CotaPartePage } from '@/pages/cota-parte/CotaPartePage';
+
 
 function AppRedirect() {
   const isGestor = useAuthStore((s) => s.isGestor());
@@ -61,6 +63,15 @@ export const router = createBrowserRouter([
           </GestorRoute>
         ),
         handle: { title: 'Licitações' },
+      },
+      {
+        path: 'cota-parte',
+        element: (
+          <GestorRoute>
+            <CotaPartePage />
+          </GestorRoute>
+        ),
+              handle: { title: 'Cota-Parte' },
       },
       {
         path: 'anuidades',
