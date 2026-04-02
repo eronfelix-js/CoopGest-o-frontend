@@ -61,8 +61,8 @@ export function SessionExpiredModal() {
     <AlertDialog open={open} onOpenChange={() => {}}>
       <AlertDialogContent
         // Impede fechar clicando fora — o usuário precisa fazer login
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
+        onPointerDownOutside={(e: Event) => e.preventDefault()}
+        onEscapeKeyDown={(e: Event) => e.preventDefault()}
       >
         <AlertDialogHeader>
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
