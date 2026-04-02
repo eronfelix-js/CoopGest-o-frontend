@@ -160,7 +160,7 @@ function CotaRow({
                   Parcelas
                 </p>
                 <div className="space-y-1.5">
-                  {cota.parcelas.map((p) => (
+                  {cota.parcelas.map((p: any) => (
                     <div
                       key={p.id}
                       className="flex items-center justify-between rounded-md border bg-background px-3 py-2 text-sm"
@@ -188,7 +188,7 @@ function CotaRow({
                   <p className="text-sm text-muted-foreground">Nenhum pagamento registrado.</p>
                 ) : (
                   <div className="space-y-1.5">
-                    {cota.pagamentos.map((pg) => (
+                    {cota.pagamentos.map((pg: any) => (
                       <div
                         key={pg.id}
                         className="flex items-center justify-between rounded-md border bg-background px-3 py-2 text-sm"
@@ -515,7 +515,7 @@ export function CotaPartePage() {
                 <span className="font-semibold text-amber-600">{formatMoeda(pagarCota.saldoDevedor)}</span>
               </p>
               <p><span className="text-muted-foreground">Parcelas abertas:</span>{' '}
-                {pagarCota.parcelas.filter((p) => p.status !== 'QUITADA').length}
+                {pagarCota.parcelas.filter((p: any) => p.status !== 'QUITADA').length}
               </p>
             </div>
           )}
