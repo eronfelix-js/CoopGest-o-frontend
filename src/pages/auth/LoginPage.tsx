@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { login } from '@/services/authService';
 import { useAuthStore } from '@/store/authStore';
 import { showApiError } from '@/utils/errors';
+import logo from '@/assets/logo.jpeg';
 
 const schema = z.object({
   email: z.string().email('E-mail inválido'),
@@ -49,7 +50,7 @@ export function LoginPage() {
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1 text-center">
           <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Sprout className="h-7 w-7 text-primary" />
+            <img src={logo} alt="Logo da cooperativa" className="h-full w-full rounded-[inherit] object-cover" />
           </div>
           <CardTitle className="text-2xl">CoopGestão</CardTitle>
           <CardDescription>Entre com seu e-mail e senha</CardDescription>

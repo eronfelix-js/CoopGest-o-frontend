@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Sprout,
   Users,
   Wallet,
   Package,
@@ -16,6 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import logo from '@/assets/logo.jpeg';
 
 const features = [
   {
@@ -69,7 +69,11 @@ export function HomePage() {
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 sm:h-10 sm:w-10">
-              <Sprout className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
+              <img
+                src={logo}
+                alt="Logo da cooperativa"
+                className="h-full w-full rounded-[inherit] object-cover"
+              />
             </div>
             <span className="text-lg font-bold text-primary sm:text-xl">CoopGestão</span>
           </div>
@@ -132,8 +136,12 @@ export function HomePage() {
           <div className="absolute left-1/2 top-0 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl sm:h-[500px] sm:w-[500px]" />
         </div>
         <div className="mx-auto max-w-6xl px-4 py-12 text-center sm:py-16 md:py-24 lg:py-32">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 sm:mb-6 sm:h-16 sm:w-16 sm:rounded-2xl">
-            <Sprout className="h-7 w-7 text-primary sm:h-10 sm:w-10" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-primary/10 sm:mb-6 sm:h-24 sm:w-24 sm:rounded-2xl">
+            <img
+              src={logo}
+              alt="Logo da cooperativa"
+              className="h-full w-full rounded-[inherit] object-cover"
+            />
           </div>
           <h1 className="mb-3 text-balance text-3xl font-bold tracking-tight sm:mb-4 sm:text-4xl md:text-5xl lg:text-6xl">
             Gestão completa para sua{' '}
@@ -274,7 +282,12 @@ export function HomePage() {
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex flex-col items-center justify-between gap-3 sm:flex-row sm:gap-4">
             <div className="flex items-center gap-2">
-              <Sprout className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
+              <img
+                src={logo}
+                alt="Logo da cooperativa"
+                className="h-4 w-4 object-contain sm:h-5 sm:w-4"
+              />
+            
               <span className="text-sm font-semibold text-primary sm:text-base">CoopGestão</span>
             </div>
             <p className="text-xs text-muted-foreground sm:text-sm">

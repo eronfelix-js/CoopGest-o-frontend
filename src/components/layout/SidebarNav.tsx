@@ -15,6 +15,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/authStore';
 import { Separator } from '@/components/ui/separator';
+import logo from '@/assets/logo.jpeg';
 
 const gestorLinks = [
   { to: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -39,7 +40,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <nav className="flex flex-1 flex-col gap-1 p-4">
       <div className="mb-4 flex items-center gap-2 px-2">
-        <Sprout className="h-8 w-8 text-primary" />
+        <img src={logo} alt="Logo da cooperativa" className="h-12 w-12 rounded-[inherit] object-cover" />
         <div>
           <p className="text-lg font-bold leading-tight text-primary">CoopGestão</p>
           <p className="text-xs text-muted-foreground">Painel web</p>
