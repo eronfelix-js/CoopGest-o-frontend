@@ -7,7 +7,6 @@ import {
   Wallet,
   FileBarChart,
   UserCog,
-  Sprout,
   FileText,
   ShoppingBasket,
   Coins
