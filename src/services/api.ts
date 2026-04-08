@@ -1,7 +1,7 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/store/authStore';
 
-const baseURL ='https://confident-endurance-production-1d64.up.railway.app';
+const baseURL ='https://coop-gestao-backend.onrender.com';
 //const baseURL = 'http://localhost:8080';
 export const api = axios.create({
   baseURL,
