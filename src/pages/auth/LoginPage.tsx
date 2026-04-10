@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { login } from '@/services/authService';
 import { useAuthStore } from '@/store/authStore';
 import { showApiError } from '@/utils/errors';
-import logo from '@/assets/logo.jpeg';
+import logo from '@/assets/logo.png';
 
 const schema = z.object({
   email: z.string().email('E-mail inválido'),

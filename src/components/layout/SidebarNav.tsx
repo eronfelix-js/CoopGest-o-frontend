@@ -14,7 +14,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/authStore';
 import { Separator } from '@/components/ui/separator';
-import logo from '@/assets/logo.jpeg';
+import logo from '@/assets/logo.png';
 
 const gestorLinks = [
   { to: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
